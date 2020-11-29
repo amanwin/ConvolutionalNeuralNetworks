@@ -398,3 +398,34 @@ Typically, deep CNNs have **multiple such CNN units** (i.e. feature map-pooling 
 ![title](img/cnn_input.png)
 
 ![title](img/cnn_input1.png)
+
+To summarise, a typical CNN has the following sequence of CNN layers:
+* We have an input image which is convolved using multiple filters to create **multiple feature maps**
+* Each feature map, of size (c, c), is **pooled** to generate a (c/2, c/2) output (for a standard 2 x 2 pooling). 
+The above pattern is called a **CNN layer or unit**. Multiple such CNN layers are stacked on top of one another to create deep CNN networks.
+
+Note that pooling reduces only the height and the width of a feature map, not the depth (i.e. the number of channels). For example, if you have m feature maps each of size (c, c), the pooling operation will produce m outputs each of size (c/2, c/2).
+
+## Building CNNs with Python and Keras
+
+### Introduction
+In this session, you will learn to **train CNNs using Python + Keras**. Compared to the previous session, this session will be more hands-on. You will spend a lot of time reading and modifying Python + Keras code and train your models on GPUs.
+
+To get started with the syntax and the process of building CNNs in Keras, you will first use the MNIST dataset (since you are already familiar with it). You will also learn to compute the number of parameters, output sizes etc. of each layer of a network.
+
+Throughout the rest of the session, you will use the **CIFAR-10** dataset which has 60000 (32 x 32) colour images of 10 classes as shown below. In these exercises, we will also experiment with some hyperparameters of CNNs. 
+
+![title](img/CIFAR_10_dataset.png)
+
+### Building CNNs in Keras - MNIST
+In this segment, you will learn to build CNNs in Keras. Specifically, you will learn to build and train a **CNN on the MNIST dataset** to classify the digits into one of the ten classes (0-9). 
+
+This is a **text only page** (with an IPython notebook) whose objective is to make you familiar with building CNNs in Keras. In the next few segments, we will demonstrate some more experiments with CNNs using Python + Keras using the CIFAR-10 dataset. 
+
+Please download the notebook below and go through it.  You do not need to download the dataset separately, it can be downloaded from Keras directly (as done in the notebook). 
+
+Please run this notebook locally, not on a GPU. You will use the GPU in the upcoming segments. Make sure you understand the section **'Understanding Model Summary'** in the notebook well - it will be required to solve the questions on the next page.
+
+[Building CNNs in Keras - MNIST](dataset/Building+a+CNN+-+MNIST.ipnb)
+
+In the next segment, you will test your understanding of the concepts covered in the notebook by solving some questions on the VGG-16 architecture.
