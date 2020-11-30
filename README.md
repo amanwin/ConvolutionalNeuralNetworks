@@ -426,6 +426,133 @@ Please download the notebook below and go through it.  You do not need to downlo
 
 Please run this notebook locally, not on a GPU. You will use the GPU in the upcoming segments. Make sure you understand the section **'Understanding Model Summary'** in the notebook well - it will be required to solve the questions on the next page.
 
-[Building CNNs in Keras - MNIST](dataset/Building+a+CNN+-+MNIST.ipnb)
+[Building CNNs in Keras - MNIST](dataset/Building+a+CNN+-+MNIST.ipynb)
 
 In the next segment, you will test your understanding of the concepts covered in the notebook by solving some questions on the VGG-16 architecture.
+
+### Comprehension - VGG16 Architecture
+In this exercise, we will dissect each layer of the VGG-16 architecture. This exercise will help you apply all the concepts learnt so far.
+
+The VGG-16 was trained on the ImageNet challenge (ILSVRC) **1000-class classification** task. The network takes a (224, 224, 3) RBG image as the input. The '16' in its name comes from the fact that the network has 16 layers with trainable weights - **13 convolutional layers** and **3 fully connected** ones (the VGG team had tried many other configurations, such as the VGG-19, which is also quite popular).
+
+The architecture is given in the table below (taken [from the original paper](https://arxiv.org/pdf/1409.1556.pdf)). Each column in the table (from A-E) denotes an architecture the team had experimented with. In this discussion, we will refer only to **column D** which refers to **VGG-16** (column E is VGG-19).
+
+![title](img/convNet.png)
+
+![title](img/vgg3.JPG)
+
+In all the convolutional layers, the same **stride length of 1 pixel** is used with a **padding of 1 pixel** on each side, thereby preserving the spatial dimensions (height and width) of the output.
+
+After every set of convolutional layers, there is a **max pooling** layer. All the pooling layers in the network use a **window of 2 x 2 pixels with stride 2**. Finally, the output of the last pooling layer is **flattened** and fed to a **fully connected (FC)** layer with 4096 neurons, followed by another FC layer of 4096 neurons, and finally to a 1000-softmax output. The softmax layer uses the usual cross-entropy loss. All layers apart from the softmax use the ReLU activation function.
+
+The number of parameters and the output size from any layer can be calculated as demonstrated in the MNIST notebook on the previous page. For example, the first convolutional layer takes a (224, 224, 3) image as the input and has 64 filters of size (3, 3, 3). Note that the **depth of a filter** is always **equal to the number of channels** in the input which it convolves. Thus, the first convolutional layer has 64 x 3 x 3 x 3 (weights) + 64 (biases) = 1792 trainable parameters. Since stride and padding of 1 pixel are used, the output spatial size is preserved, and the output will be (224, 224, 64).
+
+The total number of trainable parameters in the VGG-16 is about **138 million** (138,357,544 exactly), which is enormous. In an upcoming session, you will see that some of the recent architectures (such as ResNet etc.) have achieved much better performance with far less number of parameters.
+
+In the next few segments, we will demonstrate some experiments with various CNN hyperparameters on the CIFAR-10 dataset. 
+
+### CIFAR-10 Classification with Python - I
+In the next few segments, you will train various CNN networks on the [CIFAR-10 dataset](https://www.cs.toronto.edu/~kriz/cifar.html). It has 10 classes of 60,000 RGB images each of size (32, 32, 3). The 10 classes are aeroplane, automobile, bird, cat, deer, dog, frog, horse, ship and truck. A similar dataset is the CIFAR-100 dataset which has 100 classes. You do not need to download the dataset separately, it can be downloaded directly through the Keras API.
+
+### Getting Started with Nimblebox GPU
+We recommend that you use a GPU to run the CIFAR-10 notebooks (running each notebook locally will take 2-3 hours, on a GPU it will take 8-10 minutes). 
+
+Note: For running the notebooks for CNN, start the CNN Assignment machine and not **RNN Assignments** as mentioned in the instruction manual. Select the machine as **GPU**. The notebook for this tutorial is already present in the 'CNN Assignment' machine.
+
+### An alternative to Nimblebox - Google Colab
+In case Nimblebox is down (in case it happens), you can use Google Colab as an alternative. Google Colab is a free cloud service and provides free GPU access. You can [learn how to get started with Google Colab here](https://medium.com/deep-learning-turkey/google-colab-free-gpu-tutorial-e113627b9f5d). Note that we recommend using Nimblebox as the primary cloud provider and Google Colab only when Nimblebox is down.
+
+### CIFAR-10 Experiments
+In the coming few lectures, you will experiment with some hyperparameters and architectures and draw insights from the results. Some hyperparameters we will play with are:
+* Adding and removing dropouts in convolutional layers
+* Batch Normalization (BN)
+* L2 regularisation
+* Increasing the number of convolution layers
+* Increasing the number of filters in certain layers 
+
+**Experiment - I**: Using dropouts after conv and FC layers <br/>
+In the first experiment, we will use **dropouts** both after the convolutional and fully connected layers. 
+
+**Download - Notebook** <br/>
+You can download the notebook below.
+
+[Cifar_10_with_dropout_without_BN](dataset/1._Cifar_10_with_dropout_without_BN.ipynb)
+
+The results of the experiment are as follows:
+
+**Experiment - I**: Dropouts After Conv and FC layers
+* Training accuracy =  84%, validation accuracy = 79%
+ 
+In the next few segments, we will conduct some more experiments (without dropouts, using batch normalisation, adding more convolutional layers etc) and compare the results.
+
+### CIFAR-10 Classification with Python - II
+In the first experiment (using dropouts after both convolutional and FC layers), we got training and validation accuracies of about 84% and 79% respectively. Let's now run three different experiments as mentioned below and compare the performance:
+
+**Experiment - II**: Remove the dropouts after the convolutional layers (but retain them in the FC layer). Also, use **batch normalization** after every convolutional layer.
+
+Recall that batch normalisation (BN) normalises the outputs from each layer with the mean and standard deviation of the batch.
+
+**Experiment - III**: Use batch normalization and dropouts after every convolutional layer. Also, retain the dropouts in the FC layer.
+
+**Experiment - IV**: Remove the dropouts after the convolutional layers and use **L2 regularization** in the FC layer. Retain the dropouts in FC.
+
+You can download the notebooks here.
+
+[Cifar_10_Notebook_with_BN_without_dropout](dataset/2._Cifar_10_Notebook_with_BN_without_dropout.ipynb)
+
+[Cifar_10_Notebook](dataset/3.+Cifar_10_notebook.ipynb)
+
+[Cifar_10_l2_Notebook](dataset/4.+Cifar10_l2_notebook.ipynb)
+
+The results of the experiments done so far are summarised below. Note that 'use BN' refers to using BN after the convolutional layers, not after the FC layers.
+
+* **Experiment - I** (Use dropouts after conv and FC layers, no BN): 
+    * Training accuracy =  84%, validation accuracy  =  79%
+* **Experiment - II** (Remove dropouts from conv layers, retain dropouts in FC, use BN): 
+    * Training accuracy =  98%, validation accuracy  =  79%
+* **Experiment - III** (Use dropouts after conv and FC layers, use BN):
+    * Training accuracy =  89%, validation accuracy  =  82%
+* **Experiment - IV** (Remove dropouts from conv layers, use L2 + dropouts in FC, use BN):
+    * Training accuracy = 94%, validation accuracy = 76%. 
+
+### CIFAR-10 Classification with Python - III
+Let's continue our experiments further. From the previous experiments, we have learnt that dropouts are pretty useful, batch normalisation somewhat helps improve performance, and that L2 regularisation is not very useful on its own (i.e. without dropouts).
+
+Let's now conduct an experiment with all these thrown in together. After this experiment, let's conduct another one to test whether adding a new convolutional layer helps improve performance.
+
+**Experiment-V**: Dropouts after conv layer, L2 in FC, use BN after convolutional layer
+
+**Experiment-VI**: Add a **new convolutional layer** to the network. Note that by a 'convolutional layer', we are referring to a convolutional unit with two sets of Conv2D layers with 128 filters each (we are abusing the terminology a bit here). The code for the additional conv layer is shown below.
+
+![title](img/code.JPG)
+
+You can download the notebooks below:
+
+[Cifar10_l2_dropout_notebook](dataset/5.+Cifar10_l2_dropout_notebook.ipynb)
+
+[Cifar10_morelayer_notebook](dataset/6.+Cifar10_morelayer_notebook.ipynb)
+
+The results of these two experiments are summarised below.
+
+* **Experiment-V:** Dropouts after conv layer, L2 in FC, use BN after convolutional layer
+    * Train accuracy =  86%, validation accuracy = 83%
+* **Experiment-VI:** Add a new convolutional layer to the network
+    * Train accuracy =  89%, validation accuracy = 84%
+ 
+The additional convolutional layer boosted the validation accuracy marginally, but due to increased depth, the training time increased.
+
+### Adding Feature Maps
+In the previous experiment, we tried to increase the capacity of the model by adding a convolutional layer. Let's now try adding more feature maps to the same architecture.
+
+**Experiment - VII**: Add more feature maps to the conv layers: from 32 to 64 and 64 to 128.
+
+You can download the notebook below:
+
+[Cifar10_feature_map](dataset/7.+Cifar10_feature_map.ipynb)
+ 
+The results of our final experiment are mentioned below.
+
+**Experiment-VII:** Add more feature maps to the convolutional layers to the network
+    * Train accuracy =  92%, validation accuracy = 84%
+ 
+On adding more feature maps, the model tends to overfit (compared to adding a new convolutional layer). This shows that the task requires learning to extract more (new) abstract features, rather than trying to extract more of the same features.
